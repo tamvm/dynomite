@@ -45,7 +45,7 @@ module Dynomite
     include Errors
 
     def initialize(attrs={})
-      @attrs = attrs
+      @attrs = ActiveSupport::HashWithIndifferentAccess.new(attrs)
     end
 
     # Defining our own reader so we can do a deep merge if user passes in attrs
