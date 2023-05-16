@@ -24,8 +24,10 @@ module Dynomite
     end
 
     def where(attributes)
-      raise "attributes.size == 1 only supported for now" if attributes.size != 1
+      limit = attributes[:limit] ? attributes[:limit] : nil
+      attributes.delete(:limit)
 
+      raise "attributes.size == 1 only supported for now" if attributes.size != 1
       attr_name = attributes.keys.first
       attr_value = attributes[attr_name]
 
@@ -34,6 +36,7 @@ module Dynomite
         expression_attribute_names: { name_key => attr_name },
         expression_attribute_values: { value_key => attr_value },
         key_condition_expression: "#{name_key} = #{value_key}",
+        limit: limit
       }
 
       self.class.new(@item, @params.merge(params))
