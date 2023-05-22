@@ -25,7 +25,8 @@ module Dynomite
 
     def where(attributes)
       limit = attributes[:limit] ? attributes[:limit] : nil
-      attributes.delete(:limit)
+      scan_index_forward = attributes[:scan_index_forward]
+      attributes = attributes.except(:limit, :scan_index_forward)
 
       raise "attributes.size == 1 only supported for now" if attributes.size != 1
       attr_name = attributes.keys.first
@@ -36,7 +37,8 @@ module Dynomite
         expression_attribute_names: { name_key => attr_name },
         expression_attribute_values: { value_key => attr_value },
         key_condition_expression: "#{name_key} = #{value_key}",
-        limit: limit
+        limit: limit,
+        scan_index_forward: scan_index_forward
       }
 
       self.class.new(@item, @params.merge(params))
